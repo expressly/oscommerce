@@ -1,0 +1,24 @@
+{
+    "name": "expressly/os-commerce",
+    "description": "Expressly OsCommerce 2.3 Module",
+    "authors": [
+        {
+            "name": "expressly",
+            "email": "info@buyexpressly.com"
+        }
+    ],
+    "require": {
+        "expressly/php-common": "1.0.9"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/expressly/php-common"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Expressly\\Lib\\": "lib/"
+        }
+    }
+}

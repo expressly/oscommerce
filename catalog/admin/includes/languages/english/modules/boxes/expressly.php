@@ -1,0 +1,3 @@
+<?php
+
+define('MODULES_ADMIN_MENU_EXPRESSLY_PREFERENCES', 'Preferences');
