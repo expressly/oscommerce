@@ -1,5 +1,7 @@
 <?php
 
+use Expressly\Lib\Actions\CustomerActions;
+use Expressly\Lib\Actions\InvoiceActions;
 use Expressly\Lib\Customer;
 use Expressly\Presenter\PingPresenter;
 
@@ -10,35 +12,49 @@ require 'includes/apps/expressly/expressly.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 
-if ($method == 'GET' && !empty($_GET)) {
-    $query = $_GET['query'];
-
-    if (preg_match("/^\/?expressly\/api\/ping\/?$/", $query)) {
-        $presenter = new PingPresenter();
-        echo json_encode($presenter->toArray());
-
-        return;
-    }
-
-    if (preg_match("/^\/?expressly\/api\/user\/([\w-\.]+@[\w-\.]+)\/?$/", $query, $matches)) {
-        $email = array_pop($matches);
-
-        $ocCustomer = new Customer($app);
-        $ocCustomer->get($email);
-
-        return;
-    }
-
-    if (preg_match("/^\/?expressly\/api\/([\w-]+)\/?$/", $query, $matches)) {
-        $key = array_pop($matches);
-        tep_redirect("/ext/modules/expressly/popup.php?uuid={$key}");
-
-        return;
-    }
+if (empty($_GET['query'])) {
+    tep_redirect('/');
 }
 
-if ($method == 'POST' && !empty($_POST)) {
+$query = $_GET['query'];
 
+switch ($method) {
+    case 'GET':
+        if (preg_match("/^\/?expressly\/api\/ping\/?$/", $query)) {
+            $presenter = new PingPresenter();
+            echo json_encode($presenter->toArray());
+
+            return;
+        }
+
+        if (preg_match("/^\/?expressly\/api\/user\/([\w-\.]+@[\w-\.]+)\/?$/", $query, $matches)) {
+            $email = array_pop($matches);
+            $ocCustomer = new Customer($app);
+            $ocCustomer->get($email);
+
+            return;
+        }
+
+        if (preg_match("/^\/?expressly\/api\/([\w-]+)\/?$/", $query, $matches)) {
+            $key = array_pop($matches);
+            tep_redirect("/ext/modules/expressly/popup.php?uuid={$key}");
+
+            return;
+        }
+        break;
+    case 'POST':
+        if (preg_match("/^\/?expressly\/api\/batch\/invoice\/?$/", $query)) {
+            InvoiceActions::getBulk();
+
+            return;
+        }
+
+        if (preg_match("/^\/?expressly\/api\/batch\/customer\/?$/", $query)) {
+            CustomerActions::getBulk();
+
+            return;
+        }
+        break;
 }
 
 tep_redirect('/');
