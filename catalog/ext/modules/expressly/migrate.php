@@ -19,13 +19,19 @@ try {
 
     $content = $event->getContent();
     if (!$event->isSuccessful()) {
+        if (!empty($content['code']) && $content['code'] == 'USER_ALREADY_MIGRATED') {
+            tep_redirect('/ext/modules/expressly/exists.php');
+        }
+
         throw new GenericException($content['message']);
     }
 
     $osCustomer = new Customer($app);
-    $osCustomer->add($uuid, $content);
+    if (!$osCustomer->add($uuid, $content, $language)) {
+        tep_redirect('/ext/modules/expressly/exists.php');
+    }
 } catch (\Exception $e) {
-    $logger->addError(ExceptionFormatter::format($e));
+    $logger->error(ExceptionFormatter::format($e));
 }
 
 tep_redirect('/');

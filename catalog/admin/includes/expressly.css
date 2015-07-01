@@ -1,0 +1,148 @@
+.xly-container {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.xly-header {
+    padding: 15px;
+}
+
+.xly-header-info {
+    color: #898989;
+}
+
+.xly-button {
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    white-space: nowrap;
+    vertical-align: baseline;
+    text-align: center;
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.1));
+}
+
+small .xly-button {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.xly-button:active {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset, 0 0 6px rgba(0, 0, 0, 0.20) inset;
+}
+
+.xly-button:focus {
+    outline: 0;
+}
+
+.xly-button:hover {
+    text-decoration: none;
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.01) 100%, rgba(0, 0, 0, 0.1));
+}
+
+.xly-button.xly-button-success {
+    background-color: #1cb841;
+    border-left: 1px solid #097c20;
+    border-bottom: 1px solid #097c20;
+}
+
+.xly-button.xly-button-info {
+    background-color: #42b8dd;
+    border-left: 1px solid #177a93;
+    border-bottom: 1px solid #177a93;
+}
+
+.xly-panel {
+    padding: 1px 10px;
+    margin-bottom: 15px;
+}
+
+.xly-panel.xly-panel-info {
+    background-color: #e2f2f8;
+    border-left: 2px solid #97c5dd;
+    color: #20619a;
+    margin: 0 10px;
+}
+
+.xly-panel.xly-panel-info:last-of-type {
+    padding-bottom: 15px;
+}
+
+.xly-panel-header-info {
+    background-color: #97c5dd;
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.1));
+    font-size: 12px;
+    color: #fff;
+    padding: 3px 15px;
+    margin: 0 10px;
+}
+
+.xly-form input, .xly-form select {
+    width: 400px;
+}
+
+.xly-form .xly-panel div p label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+.xly-form .xly-panel div:first-child p label {
+    padding-top: 0;
+}
+
+p.xly-actions {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.logSuccess {
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3fad3b;
+    padding: 4px;
+}
+
+.logError {
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #d32828;
+    padding: 4px;
+}
+
+.xly-alerts ul {
+    list-style-type: none;
+    padding: 15px;
+    margin: 10px;
+}
+
+.xly-alerts .xly-alerts-error {
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    border-radius: 4px;
+    color: #a94442;
+}
+
+.xly-alerts .xly-alerts-success {
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    border-radius: 4px;
+    color: #3c763d;
+}
+
+.xly-alerts .xly-alerts-warning {
+    background-color: #fcf8e3;
+    border: 1px solid #faebcc;
+    border-radius: 4px;
+    color: #8a6d3b;
+}

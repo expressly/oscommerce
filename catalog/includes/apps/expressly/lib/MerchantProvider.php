@@ -96,7 +96,7 @@ class MerchantProvider implements MerchantProviderInterface
                 );
             }
         } catch (\Exception $e) {
-            $this->app['logger']->addError(ExceptionFormatter::format($e));
+            $this->app['logger']->error(ExceptionFormatter::format($e));
 
             return false;
         }

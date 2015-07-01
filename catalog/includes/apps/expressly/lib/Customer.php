@@ -21,24 +21,23 @@ class Customer
         $this->app = $app;
     }
 
-    public function add($uuid, $json)
+    public function add($uuid, $json, $language = 'en')
     {
         $merchant = $this->app['merchant.provider']->getMerchant();
         $event = new CustomerMigrateEvent($merchant, $uuid);
+        $exists = false;
 
         try {
             $email = $json['migration']['data']['email'];
             $customer = $json['migration']['data']['customerData'];
-//            $customerId = null;
 
             $query = tep_db_query(
-                sprintf('SELECT `customers_id` FROM %s WHERE `customers_email_address`', TABLE_CUSTOMERS)
+                sprintf('SELECT `customers_id` FROM %s WHERE `customers_email_address`="%s"', TABLE_CUSTOMERS, $email)
             );
 
             if (tep_db_num_rows($query) > 0) {
                 $event = new CustomerMigrateEvent($merchant, $uuid, CustomerMigrateEvent::EXISTING_CUSTOMER);
-//                $data = tep_db_fetch_array($query);
-//                $customerId = $data['customers_id'];
+                $exists = true;
             } else {
                 tep_db_perform(
                     TABLE_CUSTOMERS, array(
@@ -91,6 +90,25 @@ class Customer
                             "customers_id={$customerId}"
                         );
                     }
+
+                    if (defined('STORE_NAME') && defined('STORE_OWNER_EMAIL_ADDRESS')) {
+                        require(DIR_WS_LANGUAGES . $language . '/' . FILENAME_PASSWORD_FORGOTTEN);
+                        $key = tep_create_random_value(40);
+                        tep_db_query(
+                            sprintf(
+                                'UPDATE %s set `password_reset_key`="%s", `password_reset_date`=now() WHERE `customers_info_id`=%u',
+                                TABLE_CUSTOMERS_INFO,
+                                tep_db_input($key),
+                                $customerId
+                            )
+                        );
+
+                        $url = tep_href_link(FILENAME_PASSWORD_RESET,
+                            sprintf('account=%s&key=%s', urlencode($email), $key), 'SSL', true);
+                        tep_mail("{$customer['firstName']} {$customer['lastName']}", $email,
+                            EMAIL_PASSWORD_RESET_SUBJECT,
+                            sprintf(EMAIL_PASSWORD_RESET_BODY, $url), STORE_OWNER, STORE_OWNER_EMAIL_ADDRESS);
+                    }
                 }
 
                 // Log user in
@@ -104,7 +122,6 @@ class Customer
                     $_SESSION['customer_last_name'] = $customer['lastName'];
                     $_SESSION['customer_zone_id'] = 0;
 
-
                     if (!empty($json['cart']['productId'])) {
                         $cart = new \shoppingCart();
                         $cart->restore_contents();
@@ -112,13 +129,14 @@ class Customer
                         $_SESSION['cart'] = $cart;
                     }
                 }
-
             }
         } catch (\Exception $e) {
-            $this->app['logger']->addError(ExceptionFormatter::format($e));
+            $this->app['logger']->error(ExceptionFormatter::format($e));
         }
 
         $this->app['dispatcher']->dispatch('customer.migrate.success', $event);
+
+        return !$exists;
     }
 
     public function get($emailAddr)

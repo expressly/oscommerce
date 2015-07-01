@@ -23,11 +23,12 @@ class CustomerActions
             );
 
             if (tep_db_num_rows($query) > 0) {
-                $users[] = $customer;
+                $users['existing'][] = $customer;
             }
         }
 
         $presenter = new BatchCustomerPresenter($users);
-        echo json_encode($presenter->toArray());
+
+        return $presenter->toArray();
     }
 }

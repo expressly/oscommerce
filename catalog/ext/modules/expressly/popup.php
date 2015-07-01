@@ -29,7 +29,7 @@ try {
     );
     echo $content;
 } catch (\Exception $e) {
-    $logger->addError(ExceptionFormatter::format($e));
+    $logger->error(ExceptionFormatter::format($e));
 
     tep_redirect('/');
 }

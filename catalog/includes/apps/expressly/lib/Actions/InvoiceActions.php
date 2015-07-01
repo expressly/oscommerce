@@ -67,6 +67,7 @@ class InvoiceActions
         }
 
         $presenter = new BatchInvoicePresenter($invoices);
-        echo json_encode($presenter->toArray());
+
+        return $presenter->toArray();
     }
 }

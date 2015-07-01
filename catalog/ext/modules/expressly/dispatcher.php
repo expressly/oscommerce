@@ -44,13 +44,13 @@ switch ($method) {
         break;
     case 'POST':
         if (preg_match("/^\/?expressly\/api\/batch\/invoice\/?$/", $query)) {
-            InvoiceActions::getBulk();
+            echo json_encode(InvoiceActions::getBulk());
 
             return;
         }
 
         if (preg_match("/^\/?expressly\/api\/batch\/customer\/?$/", $query)) {
-            CustomerActions::getBulk();
+            echo json_encode(CustomerActions::getBulk());
 
             return;
         }
