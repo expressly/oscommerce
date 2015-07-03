@@ -31,4 +31,10 @@
     openPrivacy = function (event) {
         window.open(event.href, '_blank');
     };
+
+    (function () {
+        // make sure our popup is on top or hierarchy
+        content = document.getElementById('xly');
+        document.body.insertBefore(content, document.body.children[0]);
+    })();
 })();
