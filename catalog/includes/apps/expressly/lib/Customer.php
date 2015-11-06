@@ -10,6 +10,7 @@ use Expressly\Event\CustomerMigrateEvent;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Exception\GenericException;
 use Expressly\Presenter\CustomerMigratePresenter;
+use Expressly\Subscriber\CustomerMigrationSubscriber;
 use Silex\Application;
 
 class Customer
@@ -134,7 +135,7 @@ class Customer
             $this->app['logger']->error(ExceptionFormatter::format($e));
         }
 
-        $this->app['dispatcher']->dispatch('customer.migrate.success', $event);
+        $this->app['dispatcher']->dispatch(CustomerMigrationSubscriber::CUSTOMER_MIGRATE_SUCCESS, $event);
 
         return !$exists;
     }
@@ -193,6 +194,6 @@ class Customer
         $merchant = $this->app['merchant.provider']->getMerchant();
         $response = new CustomerMigratePresenter($merchant, $customer, $emailAddr, $osCustomer['customers_id']);
 
-        echo json_encode($response->toArray());
+        return $response->toArray();
     }
 }

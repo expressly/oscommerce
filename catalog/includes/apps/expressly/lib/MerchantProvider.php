@@ -12,16 +12,9 @@ class MerchantProvider implements MerchantProviderInterface
     private $app;
     private $merchant;
 
-    const DESTINATION = 'OSCOM_APP_EXPRESSLY_DESTINATION';
+    const APIKEY = 'OSCOM_APP_EXPRESSLY_APIKEY';
     const PATH = 'OSCOM_APP_EXPRESSLY_PATH';
     const HOST = 'OSCOM_APP_EXPRESSLY_HOST';
-    const IMAGE = 'OSCOM_APP_EXPRESSLY_IMAGE';
-    const NAME = 'STORE_NAME';
-    const OFFER = 'OSCOM_APP_EXPRESSLY_OFFER';
-    const PASSWORD = 'OSCOM_APP_EXPRESSLY_PASSWORD';
-    const POLICY = 'OSCOM_APP_EXPRESSLY_POLICY';
-    const TERMS = 'OSCOM_APP_EXPRESSLY_TERMS';
-    const UUID = 'OSCOM_APP_EXPRESSLY_UUID';
 
     public function __construct(Application $app)
     {
@@ -29,16 +22,9 @@ class MerchantProvider implements MerchantProviderInterface
 
         $merchant = new Merchant();
         $merchant
-            ->setDestination($this->getParameter(self::DESTINATION))
+            ->setApiKey($this->getParameter(self::APIKEY))
             ->setPath($this->getParameter(self::PATH))
-            ->setHost($this->getParameter(self::HOST))
-            ->setImage($this->getParameter(self::IMAGE))
-            ->setName($this->getParameter(self::NAME))
-            ->setOffer($this->getParameter(self::OFFER))
-            ->setPassword($this->getParameter(self::PASSWORD))
-            ->setPolicy($this->getParameter(self::POLICY))
-            ->setTerms($this->getParameter(self::TERMS))
-            ->setUuid($this->getParameter(self::UUID));
+            ->setHost($this->getParameter(self::HOST));
 
         $this->merchant = $merchant;
     }
@@ -51,15 +37,9 @@ class MerchantProvider implements MerchantProviderInterface
     public function setMerchant(Merchant $merchant)
     {
         $values = array(
-            self::DESTINATION => $merchant->getDestination(),
+            self::APIKEY => $merchant->getApiKey(),
             self::PATH => $merchant->getPath(),
-            self::HOST => $merchant->getHost(),
-            self::IMAGE => $merchant->getImage(),
-            self::OFFER => $merchant->getOffer(),
-            self::PASSWORD => $merchant->getPassword(),
-            self::POLICY => $merchant->getPolicy(),
-            self::TERMS => $merchant->getTerms(),
-            self::UUID => $merchant->getUuid()
+            self::HOST => $merchant->getHost()
         );
 
         foreach ($values as $key => $value) {

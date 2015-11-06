@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "expressly/php-common": "1.0.16"
+        "expressly/php-common": "2.3.0"
     },
     "repositories": [
         {

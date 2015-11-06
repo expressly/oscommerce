@@ -4,6 +4,7 @@ use Expressly\Event\CustomerMigrateEvent;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Exception\GenericException;
 use Expressly\Lib\Customer;
+use Expressly\Subscriber\CustomerMigrationSubscriber;
 
 chdir('../../../');
 require 'index.php';
@@ -16,7 +17,7 @@ try {
 
     $uuid = $_GET['uuid'];
     $event = new CustomerMigrateEvent($merchant, $uuid);
-    $dispatcher->dispatch('customer.migrate.popup', $event);
+    $dispatcher->dispatch(CustomerMigrationSubscriber::CUSTOMER_MIGRATE_POPUP, $event);
 
     $content = $event->getContent();
     if (!$event->isSuccessful()) {

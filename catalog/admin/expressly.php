@@ -4,6 +4,7 @@ use Expressly\Event\MerchantEvent;
 use Expressly\Event\PasswordedEvent;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Exception\GenericException;
+use Expressly\Subscriber\MerchantSubscriber;
 use Monolog\Formatter\JsonFormatter;
 
 require 'includes/application_top.php';
@@ -12,82 +13,36 @@ require DIR_FS_CATALOG . 'includes/apps/expressly/expressly.php';
 include DIR_WS_INCLUDES . 'template_top.php';
 
 // Expressly preferences dashboard
-switch ($_SERVER['REQUEST_METHOD']) {
-    case 'GET':
-        if (!empty($_GET['register'])) {
-            try {
-                $uuid = $merchant->getUuid();
-                $password = $merchant->getPassword();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $apiKey = $merchant->getApiKey();
 
-                if (empty($uuid) || empty($password)) {
-                    // seed initial data
-                    $host = sprintf('%s://%s', $_SERVER['REQUEST_SCHEME'], $_SERVER['HTTP_HOST']);
+        if (empty($apiKey)) {
+            // seed initial data
+            $host = sprintf('http://%s', $_SERVER['HTTP_HOST']);
 
-                    $merchant
-                        ->setDestination('/')
-                        ->setPath('/ext/modules/expressly/dispatcher.php?query=')
-                        ->setHost($host)
-                        ->setImage($host . '/images/store_logo.png')
-                        ->setOffer((int)true)
-                        ->setPolicy($host . '/privacy.php')
-                        ->setTerms($host . '/conditions.php');
-
-                    $event = new MerchantEvent($merchant);
-                    $dispatcher->dispatch('merchant.register', $event);
-
-                    if (!$event->isSuccessful()) {
-                        throw new GenericException(formatError($event));
-                    }
-
-                    $content = $event->getContent();
-                    $merchant
-                        ->setUuid($content['merchantUuid'])
-                        ->setPassword($content['secretKey']);
-
-                    $provider->setMerchant($merchant);
-                    $flash['success'][] = 'Your store is now registered.';
-                }
-            } catch (\Exception $e) {
-                $flash['error'][] = $e->getMessage();
-                $logger->error(ExceptionFormatter::format($e));
-            }
-        }
-        break;
-    case 'POST':
-        if (empty($_POST)) {
-            break;
+            $merchant
+                ->setPath('/ext/modules/expressly/dispatcher.php?query=')
+                ->setHost($host);
         }
 
-        $image = !empty($_POST['shop_image_url']) ? $_POST['shop_image_url'] : $merchant->getImage();
-        $terms = !empty($_POST['shop_terms_url']) ? $_POST['shop_terms_url'] : $merchant->getTerms();
-        $policy = !empty($_POST['shop_privacy_url']) ? $_POST['shop_privacy_url'] : $merchant->getPolicy();
+        $apiKey = !empty($_POST['expressly_apikey']) ? $_POST['expressly_apikey'] : $apiKey;
+        $merchant->setApiKey($apiKey);
 
-        $merchant
-            ->setImage($image)
-            ->setTerms($terms)
-            ->setPolicy($policy);
+        $event = new PasswordedEvent($merchant);
+        $dispatcher->dispatch(MerchantSubscriber::MERCHANT_REGISTER, $event);
+        $provider->setMerchant($merchant);
 
-        try {
-            $event = new PasswordedEvent($merchant);
-            $dispatcher->dispatch('merchant.update', $event);
-
-            if (!$event->isSuccessful()) {
-                throw new GenericException(formatError($event));
-            }
-
-            $provider->setMerchant($merchant);
-            $flash['success'][] = 'Values updated successfully.';
-        } catch (\Exception $e) {
-            $flash['error'][] = $e->getMessage();
-            $logger->error(ExceptionFormatter::format($e));
+        if (!$event->isSuccessful()) {
+            throw new GenericException(formatError($event));
         }
-        break;
+
+        $flash['success'][] = 'Your store is now registered.';
+    } catch (\Exception $e) {
+        $flash['error'][] = $e->getMessage();
+        $logger->error(ExceptionFormatter::format($e));
+    }
 }
-
-// Need to be set prior to usage as 5.3 is target version
-$uuid = $merchant->getUuid();
-$password = $merchant->getPassword();
-
 ?>
 
     <link rel="stylesheet" type="text/css" href="includes/expressly.css"/>
@@ -126,62 +81,19 @@ $password = $merchant->getPassword();
             <div class="xly-panel xly-panel-info">
                 <div>
                     <p>
-                        <label>Shop Image URL</label>
-                        <img src="<?php echo $merchant->getImage(); ?>"/>
+                        <label>API Key</label>
+                        API Key provided from our <a href="https://buyexpressly.com/#/install#api">portal</a>. If you do
+                        not have an API Key, please follow the previous link for instructions on how to create one.
                     </p>
 
                     <div>
-                        <input type="text" name="shop_image_url" value="<?php echo $merchant->getImage(); ?>"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="xly-panel xly-panel-info">
-                <div>
-                    <p>
-                        <label>Terms and Conditions URL</label>
-                        URL for the Terms & Conditions for your store. <a href="<?php echo $merchant->getTerms(); ?>">Check</a>
-                    </p>
-
-                    <div>
-                        <input type="text" name="shop_terms_url" value="<?php echo $merchant->getTerms(); ?>"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="xly-panel xly-panel-info">
-                <div>
-                    <p>
-                        <label>Privacy Policy URL</label>
-                        URL for the Privacy Policy for your store. <a
-                            href="<?php echo $merchant->getPolicy(); ?>">Check</a>
-                    </p>
-
-                    <div>
-                        <input type="text" name="shop_privacy_url" value="<?php echo $merchant->getPolicy(); ?>"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="xly-panel xly-panel-info">
-                <div>
-                    <p>
-                        <label>Password</label>
-                        Expressly password for your store
-                    </p>
-
-                    <div>
-                        <input type="text" value="<?php echo $merchant->getPassword(); ?>" disabled="disabled"/>
+                        <input type="text" name="expressly_apikey" value="<?php echo $merchant->getApiKey(); ?>"/>
                     </div>
                 </div>
             </div>
 
             <p class="xly-actions">
-                <?php if (!empty($uuid) && !empty($password)): ?>
-                    <button type="submit" class="xly-button xly-button-success">Save</button>
-                <?php else: ?>
-                    <a class="xly-button xly-button-info" href="expressly.php?register=1">Register</a>
-                <?php endif; ?>
+                <button type="submit" class="xly-button xly-button-success">Save</button>
             </p>
         </form>
     </div>
