@@ -1,9 +1,8 @@
 .DS_Store
 .idea
 
-/bin
-/build/coverage
-/build/logs
+/build
+/catalog/includes/apps/expressly/vendor
 /vendor
-/composer.lock
-/composer.phar
+composer.lock
+composer.phar

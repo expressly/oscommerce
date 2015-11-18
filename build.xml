@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Expressly osCommerce 2.3 Module" default="build">
+
+    <!-- ============================================  -->
+    <!-- Target: prepare                               -->
+    <!-- ============================================  -->
+    <target name="prepare">
+        <echo msg="Making directory ./build" />
+        <mkdir dir="./build" />
+    </target>
+
+    <!-- ============================================  -->
+    <!-- Target: build                                 -->
+    <!-- ============================================  -->
+    <target name="build" depends="prepare">
+
+        <echo msg="Download osCommerce dist..." />
+
+        <exec command="curl -o oscommerce2.zip -L http://github.com/osCommerce/oscommerce2/archive/v2.3.4.zip" dir="./build" />
+
+        <unzip file="./build/oscommerce2.zip" todir="./build"></unzip>
+
+        <copy todir="./build/webroot">
+            <fileset dir="./build/oscommerce2-2.3.4/catalog" />
+            <fileset dir="./catalog" />
+        </copy>
+
+        <copy file="././configure.php.dist" tofile="./build/webroot/includes/local/configure.php" overwrite="true">
+            <filterchain>
+                <replacetokens begintoken="%%" endtoken="%%">
+                    <token key="DIR_FS_CATALOG" value="${project.basedir}/build/webroot/" />
+                </replacetokens>
+            </filterchain>
+        </copy>
+
+        <pdosqlexec url="mysql:host=localhost;dbname=osc_test" encoding="utf8"
+                    userid="root" password="" onerror="abort">
+            <fileset dir="./build/webroot/install">
+                <include name="*.sql"/>
+            </fileset>
+        </pdosqlexec>
+
+    </target>
+
+    <!-- ============================================  -->
+    <!-- (DEFAULT)  Target: dist                       -->
+    <!-- ============================================  -->
+    <target name="dist" depends="build">
+        <echo msg="Creating archive..." />
+
+        <!-- Do something -->
+
+        <echo msg="Files copied and compressed in build directory OK!" />
+    </target>
+</project>

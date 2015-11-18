@@ -1,10 +1,17 @@
 <phpunit bootstrap="tests/bootstrap.php">
 
     <testsuites>
-        <testsuite name="Expressly osCommerce 2.3 Module Unit Tests Suite">
+        <testsuite name="Expressly osCommerce 2.3 Module Tests Suite">
+            <directory suffix="Test.php">./tests/functional</directory>
             <directory suffix="Test.php">./tests/unit</directory>
         </testsuite>
     </testsuites>
+
+    <php>
+        <const name="WEB_SERVER_HOST"    value="localhost" />
+        <const name="WEB_SERVER_PORT"    value="8888" />
+        <const name="WEB_SERVER_WEBROOT" value="./build/webroot" />
+    </php>
 
     <logging>
         <log type="coverage-html" target="build/coverage" title="Expressly osCommerce 2.3 Module"
