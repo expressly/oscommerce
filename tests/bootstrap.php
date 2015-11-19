@@ -24,6 +24,7 @@ register_shutdown_function(function() use ($pid) {
     exec('kill ' . $pid);
 });
 
+require_once('vendor/autoload.php');
 
 
 //$url = "http://github.com/osCommerce/oscommerce2/archive/v2.3.4.zip";
