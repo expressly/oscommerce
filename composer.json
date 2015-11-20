@@ -8,13 +8,12 @@
     }
   ],
   "require": {
+    "php": ">=5.3.9",
     "expressly/php-common": "2.3.*"
   },
   "require-dev": {
     "phing/phing": "2.*",
-    "phpunit/phpunit": "4.8.*",
-    "phpunit/phpunit-selenium": ">=1.2",
-    "guzzlehttp/guzzle": "6.1.*"
+    "phpunit/phpunit": "4.8.*"
   },
   "repositories": [
     {
@@ -24,7 +23,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Expressly\\Lib\\": "lib/"
+      "Expressly\\Lib\\": "catalog/includes/apps/expressly/lib/"
     }
   },
   "scripts": {

@@ -11,6 +11,10 @@
         <const name="WEB_SERVER_HOST"    value="localhost" />
         <const name="WEB_SERVER_PORT"    value="8888" />
         <const name="WEB_SERVER_WEBROOT" value="./build/webroot" />
+        <const name="DB_HOST"     value="localhost" />
+        <const name="DB_USERNAME" value="root" />
+        <const name="DB_PASSWORD" value="" />
+        <const name="DB_DBNAME"   value="osc_test" />
     </php>
 
     <logging>

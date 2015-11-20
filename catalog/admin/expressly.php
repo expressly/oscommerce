@@ -8,7 +8,9 @@ use Expressly\Subscriber\MerchantSubscriber;
 use Monolog\Formatter\JsonFormatter;
 
 require 'includes/application_top.php';
-require DIR_FS_CATALOG . 'includes/apps/expressly/expressly.php';
+require_once (DIR_FS_CATALOG . 'includes/apps/expressly/OSCOM_Expressly.php');
+
+$OSCOM_Expressly = new OSCOM_Expressly();
 
 include DIR_WS_INCLUDES . 'template_top.php';
 
@@ -34,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $provider->setMerchant($merchant);
 
         if (!$event->isSuccessful()) {
-            throw new GenericException(formatError($event));
+            throw new GenericException($OSCOM_Expressly->formatError($event));
         }
 
         $flash['success'][] = 'Your store is now registered.';

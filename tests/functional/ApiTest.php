@@ -15,12 +15,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->client = new GuzzleHttp\Client([
-            'base_url' => 'http://localhost:8888',
-            'defaults' => [
-                'exceptions' => false,
-            ],
-        ]);
+        $this->client = new \Buzz\Client\Curl();
     }
 
     /**
@@ -28,15 +23,17 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     public function testPingSuccess()
     {
-        $response = $this->client->request('GET', 'http://localhost:8888/ext/modules/expressly/dispatcher.php?query=/expressly/api/ping');
+        $request  = new Buzz\Message\Request('GET', '/ext/modules/expressly/dispatcher.php?query=/expressly/api/ping', 'http://localhost:8888');
+        $response = new Buzz\Message\Response();
+
+        $this->client->send($request, $response);
 
         $this->assertEquals(200, $response->getStatusCode());
-        // TODO: needs to be "application/json"
-        $this->assertEquals('text/html', $response->getHeaderLine('Content-Type'));
+        $this->assertEquals('application/json', $response->getHeader('Content-Type'));
 
-        $this->assertJson(strval($response->getBody()));
+        $this->assertJson(strval($response->getContent()));
 
-        $this->assertEquals(['expressly' => 'Stuff is happening!'], json_decode($response->getBody(), true));
+        $this->assertEquals(['expressly' => 'Stuff is happening!'], json_decode($response->getContent(), true));
     }
 
     /**
@@ -44,18 +41,18 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     public function testUserSuccess()
     {
-        $response = $this->client->request('GET', 'http://localhost:8888/ext/modules/expressly/dispatcher.php?query=/expressly/api/user/test@test.com', [
-            'http_errors' => false,
-            //'auth'        => ''
-        ]);
+        $request  = new Buzz\Message\Request('GET', '/ext/modules/expressly/dispatcher.php?query=/expressly/api/user/test1234567890@test.com', 'http://localhost:8888');
+        $request->addHeader('Authorization: Basic ODI4MjdhMjUtYWZmOS00NjRlLTkwYzUtODNjNDUxMTdkYmJkOlFrRDV6T0NPS21XUUhUVGxrV0Zvb25UVUUwQ0xsb1ZY');
+        $response = new Buzz\Message\Response();
+
+        $this->client->send($request, $response);
 
         $this->assertEquals(200, $response->getStatusCode());
-        // TODO: needs to be "application/json"
-        $this->assertEquals('text/html', $response->getHeaderLine('Content-Type'));
+        $this->assertEquals('application/json', $response->getHeader('Content-Type'));
 
-        $this->assertJson(strval($response->getBody()));
+        $this->assertJson(strval($response->getContent()));
 
-        // Do something
+        // Do something else
     }
 
     /**
@@ -63,10 +60,12 @@ class ApiTest extends PHPUnit_Framework_TestCase
      */
     public function testUserFailed()
     {
-        $response = $this->client->request('GET', 'http://localhost:8888/ext/modules/expressly/dispatcher.php?query=/expressly/api/user/test@test.com', ['http_errors' => false]);
+        $request  = new Buzz\Message\Request('GET', '/ext/modules/expressly/dispatcher.php?query=/expressly/api/user/test1234567890@test.com', 'http://localhost:8888');
+        $response = new Buzz\Message\Response();
+
+        $this->client->send($request, $response);
 
         $this->assertEquals(401, $response->getStatusCode());
     }
-
 
 }
