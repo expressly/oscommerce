@@ -24,16 +24,14 @@ register_shutdown_function(function() use ($pid) {
     exec('kill ' . $pid);
 });
 
+require_once('catalog/includes/apps/expressly/OSCOM_Expressly.php');
 require_once('vendor/autoload.php');
-
-$key = 'OSCOM_APP_EXPRESSLY_APIKEY';
-$value = 'ODI4MjdhMjUtYWZmOS00NjRlLTkwYzUtODNjNDUxMTdkYmJkOlFrRDV6T0NPS21XUUhUVGxrV0Zvb25UVUUwQ0xsb1ZY';
 
 $db = new PDO('mysql:host='.DB_HOST.';dbname='.DB_DBNAME.';charset=utf8', DB_USERNAME, DB_PASSWORD);
 $db->exec(sprintf(
     'INSERT INTO %s (`configuration_title`, `configuration_value`, `configuration_key`, `configuration_description`, `configuration_group_id`, `sort_order`) VALUES ("%s", "%s", "%s", "", 0, 6);',
     'configuration',
     'Expressly Preferences',
-    $value,
-    $key
+    OSCOM_APP_EXPRESSLY_APIKEY,
+    'OSCOM_APP_EXPRESSLY_APIKEY'
 ));

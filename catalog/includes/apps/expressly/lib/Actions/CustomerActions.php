@@ -5,6 +5,7 @@ namespace Expressly\Lib\Actions;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Exception\GenericException;
 use Expressly\Presenter\BatchCustomerPresenter;
+use Silex\Application;
 
 class CustomerActions
 {
@@ -37,8 +38,7 @@ class CustomerActions
             $app['logger']->error(ExceptionFormatter::format($e));
         }
 
-
-        $presenter = new BatchCustomerPresenter($users);
+        $presenter = new BatchCustomerPresenter($users['existing']);
 
         return $presenter->toArray();
     }

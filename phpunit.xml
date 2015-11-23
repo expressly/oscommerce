@@ -15,6 +15,7 @@
         <const name="DB_USERNAME" value="root" />
         <const name="DB_PASSWORD" value="" />
         <const name="DB_DBNAME"   value="osc_test" />
+        <const name="OSCOM_APP_EXPRESSLY_APIKEY" value="ODI4MjdhMjUtYWZmOS00NjRlLTkwYzUtODNjNDUxMTdkYmJkOlFrRDV6T0NPS21XUUhUVGxrV0Zvb25UVUUwQ0xsb1ZY" />
     </php>
 
     <logging>

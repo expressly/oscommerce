@@ -3,6 +3,7 @@
 
 /build
 /catalog/includes/apps/expressly/vendor
+/dist
 /vendor
 composer.lock
 composer.phar

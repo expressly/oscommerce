@@ -69,6 +69,7 @@ class OSCOM_Expressly
                     break;
                 case Registered::getName():
                     $presenter = new RegisteredPresenter();
+                    header('Content-Type: application/json');
                     echo json_encode($presenter->toArray());
 
                     return;
@@ -94,12 +95,13 @@ class OSCOM_Expressly
                     return;
                     break;
                 case BatchCustomer::getName():
-                    echo json_encode(InvoiceActions::getBulk($this->app));
+                    header('Content-Type: application/json');
+                    echo json_encode(CustomerActions::getBulk($this->app));
 
                     return;
                     break;
                 case BatchInvoice::getName():
-                    echo json_encode(CustomerActions::getBulk($this->app));
+                    echo json_encode(InvoiceActions::getBulk($this->app));
                     return;
                     break;
             }
