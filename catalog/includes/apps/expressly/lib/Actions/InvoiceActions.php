@@ -42,39 +42,44 @@ class InvoiceActions
                 $invoice = new Invoice();
                 $invoice->setEmail($customer->email);
 
-                foreach (tep_db_fetch_array($orderQuery) as $row) {
-                    if (empty($row['orders_id'])) {
-                        continue;
+                $order_array = tep_db_fetch_array($orderQuery);
+
+                if (!empty($order_array)) {
+                    foreach ($order_array as $row) {
+                        if (empty($row['orders_id'])) {
+                            continue;
+                        }
+
+                        $productQuery = tep_db_query(
+                            sprintf(
+                                'SELECT * FROM %s WHERE `orders_id`=%u;',
+                                TABLE_ORDERS_PRODUCTS,
+                                $row['orders_id']
+                            )
+                        );
+
+                        $total = 0.0;
+                        $tax = 0.0;
+                        $count = 0;
+                        $currency = '';
+
+                        foreach (tep_db_fetch_array($productQuery) as $osProduct) {
+                            $total += $osProduct['products_price'];
+                            $tax += $osProduct['products_tax'];
+                            ++$count;
+                            $currency = $osProduct['currency'];
+                        }
+
+                        $order = new Order();
+                        $order
+                            ->setId($row['orders_id'])
+                            ->setDate(new \DateTime($row['date_purchased']))
+                            ->setCurrency($currency)
+                            ->setTotal($total, $tax);
+
+                        $invoice->addOrder($order);
                     }
 
-                    $productQuery = tep_db_query(
-                        sprintf(
-                            'SELECT * FROM %s WHERE `orders_id`=%u;',
-                            TABLE_ORDERS_PRODUCTS,
-                            $row['orders_id']
-                        )
-                    );
-
-                    $total = 0.0;
-                    $tax = 0.0;
-                    $count = 0;
-                    $currency = '';
-
-                    foreach (tep_db_fetch_array($productQuery) as $osProduct) {
-                        $total += $osProduct['products_price'];
-                        $tax += $osProduct['products_tax'];
-                        ++$count;
-                        $currency = $osProduct['currency'];
-                    }
-
-                    $order = new Order();
-                    $order
-                        ->setId($row['orders_id'])
-                        ->setDate(new \DateTime($row['date_purchased']))
-                        ->setCurrency($currency)
-                        ->setTotal($total, $tax);
-
-                    $invoice->addOrder($order);
                 }
             }
         } catch (\Exception $e) {

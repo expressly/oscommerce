@@ -14,26 +14,30 @@ $OSCOM_Expressly = new OSCOM_Expressly();
 
 include DIR_WS_INCLUDES . 'template_top.php';
 
+$flash = array(
+    'success' => array(),
+    'error'   => array(),
+);
+
 // Expressly preferences dashboard
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $apiKey = $merchant->getApiKey();
+        $apiKey = $OSCOM_Expressly->getMerchant()->getApiKey();
 
         if (empty($apiKey)) {
             // seed initial data
-            $host = sprintf('http://%s', $_SERVER['HTTP_HOST']);
-
-            $merchant
+            $OSCOM_Expressly->getMerchant()
                 ->setPath('/ext/modules/expressly/dispatcher.php?query=')
-                ->setHost($host);
+                ->setHost(sprintf('http://%s', $_SERVER['HTTP_HOST']));
         }
 
         $apiKey = !empty($_POST['expressly_apikey']) ? $_POST['expressly_apikey'] : $apiKey;
-        $merchant->setApiKey($apiKey);
 
-        $event = new PasswordedEvent($merchant);
-        $dispatcher->dispatch(MerchantSubscriber::MERCHANT_REGISTER, $event);
-        $provider->setMerchant($merchant);
+        $OSCOM_Expressly->getMerchant()->setApiKey($apiKey);
+        $event = new PasswordedEvent($OSCOM_Expressly->getMerchant());
+
+        $OSCOM_Expressly->getDispather()->dispatch(MerchantSubscriber::MERCHANT_REGISTER, $event);
+        $OSCOM_Expressly->getProvider()->setMerchant($OSCOM_Expressly->getMerchant());
 
         if (!$event->isSuccessful()) {
             throw new GenericException($OSCOM_Expressly->formatError($event));
@@ -42,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $flash['success'][] = 'Your store is now registered.';
     } catch (\Exception $e) {
         $flash['error'][] = $e->getMessage();
-        $logger->error(ExceptionFormatter::format($e));
+        $OSCOM_Expressly->getLogger()->error(ExceptionFormatter::format($e));
     }
 }
 ?>
@@ -89,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </p>
 
                     <div>
-                        <input type="text" name="expressly_apikey" value="<?php echo $merchant->getApiKey(); ?>"/>
+                        <input type="text" name="expressly_apikey" value="<?php echo $OSCOM_Expressly->getMerchant()->getApiKey(); ?>"/>
                     </div>
                 </div>
             </div>

@@ -11,11 +11,15 @@
         <const name="WEB_SERVER_HOST"    value="localhost" />
         <const name="WEB_SERVER_PORT"    value="8888" />
         <const name="WEB_SERVER_WEBROOT" value="./build/webroot" />
+
         <const name="DB_HOST"     value="localhost" />
         <const name="DB_USERNAME" value="root" />
         <const name="DB_PASSWORD" value="" />
         <const name="DB_DBNAME"   value="osc_test" />
+
         <const name="OSCOM_APP_EXPRESSLY_APIKEY" value="ODI4MjdhMjUtYWZmOS00NjRlLTkwYzUtODNjNDUxMTdkYmJkOlFrRDV6T0NPS21XUUhUVGxrV0Zvb25UVUUwQ0xsb1ZY" />
+        <const name="OSCOM_APP_EXPRESSLY_HOST"   value="http://localhost:8888" />
+        <const name="OSCOM_APP_EXPRESSLY_PATH"   value="'/ext/modules/expressly/dispatcher.php?query='" />
     </php>
 
     <logging>

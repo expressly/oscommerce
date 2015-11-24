@@ -2,6 +2,11 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+require_once __DIR__ . '/lib/Actions/CustomerActions.php';
+require_once __DIR__ . '/lib/Actions/InvoiceActions.php';
+require_once __DIR__ . '/lib/Customer.php';
+require_once __DIR__ . '/lib/MerchantProvider.php';
+
 use Expressly\Entity\Route;
 use Expressly\Lib\Actions\CustomerActions;
 use Expressly\Lib\Actions\InvoiceActions;
@@ -40,15 +45,42 @@ class OSCOM_Expressly
 
         $this->app =& $app;
 
-        $dispatcher = $this->app['dispatcher'];
-        $provider   = $this->app['merchant.provider'];
-        $merchant   = $provider->getMerchant();
-        $logger     = $this->app['logger'];
-
         $flash = array(
             'success' => array(),
             'error'   => array(),
         );
+    }
+
+    /**
+     *
+     */
+    public function getDispather()
+    {
+        return $this->app['dispatcher'];
+    }
+
+    /**
+     *
+     */
+    public function getProvider()
+    {
+        return $this->app['merchant.provider'];
+    }
+
+    /**
+     *
+     */
+    public function getMerchant($update = false)
+    {
+        return $this->app['merchant.provider']->getMerchant($update);
+    }
+
+    /**
+     *
+     */
+    public function getLogger()
+    {
+        return $this->app['logger'];
     }
 
     /**
@@ -101,6 +133,7 @@ class OSCOM_Expressly
                     return;
                     break;
                 case BatchInvoice::getName():
+                    header('Content-Type: application/json');
                     echo json_encode(InvoiceActions::getBulk($this->app));
                     return;
                     break;

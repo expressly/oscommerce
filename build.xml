@@ -21,6 +21,8 @@
 
         <unzip file="./build/oscommerce2.zip" todir="./build"></unzip>
 
+        <exec command="COMPOSER_VENDOR_DIR=./catalog/includes/apps/expressly/vendor composer install --no-dev" />
+
         <copy todir="./build/webroot">
             <fileset dir="./build/oscommerce2-2.3.4/catalog" />
             <fileset dir="./catalog" />
