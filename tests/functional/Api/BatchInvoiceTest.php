@@ -19,8 +19,8 @@ class BatchInvoiceTest extends BaseApiTestCase
             'customers' => [
                 [
                     'email' => 'john.doe@example.com',
-                    //'from'  => '2015-01-01 00:00:00',
-                    //'to'    => '2015-01-01 00:00:00',
+                    'from'  => '2015-01-01 00:00:00',
+                    'to'    => '2016-01-01 00:00:00',
                 ]
             ],
         ]));
@@ -35,9 +35,29 @@ class BatchInvoiceTest extends BaseApiTestCase
 
         $this->assertJson(strval($response->getContent()));
 
+        /**
+         * Check predefined data in tests/fixtures/dump.sql
+         */
         $this->assertEquals([
-            'invoices' => []
-        ], json_decode($response->getContent(), true));
+            'invoices' => [
+                [
+                    'email'        => 'john.doe@example.com',
+                    'orderCount'   => 1,
+                    'preTaxTotal'  => 529.98,
+                    'postTaxTotal' => 529.98,
+                    'tax'          => 0,
+                    'orders' => [
+                        [
+                            'id'           => 1,
+                            'date'         => '2015-10-13T13:48:53+0000',
+                            'preTaxTotal'  => 529.98,
+                            'postTaxTotal' => 529.98,
+                            'tax'          => 0
+                        ]
+                    ]
+                ]
+            ]
+        ], json_decode(strval($response->getContent()), true));
     }
 
     /**
