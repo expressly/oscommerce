@@ -4,6 +4,6 @@
 /bin
 /build/coverage
 /build/logs
-/vendor
-/composer.lock
-/composer.phar
+vendor
+composer.lock
+composer.phar

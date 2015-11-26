@@ -1,5 +1,5 @@
 {
-    "name": "expressly/os-commerce",
+    "name": "expressly/oscommerce",
     "description": "Expressly OsCommerce 2.3 Module",
     "authors": [
         {
@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "expressly/php-common": "2.3.0"
+        "expressly/php-common": "2.3.2"
     },
     "repositories": [
         {
