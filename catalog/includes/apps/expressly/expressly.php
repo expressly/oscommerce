@@ -6,9 +6,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 $client = new Expressly\Client(Expressly\Entity\MerchantType::OSCOMMERCE_2);
 
 $app = $client->getApp();
-$app['merchant.provider'] = $app->share(function () use ($app) {
+$app['merchant.provider'] = function () use ($app) {
     return new Expressly\Lib\MerchantProvider($app);
-});
+};
 
 $dispatcher = $app['dispatcher'];
 $provider = $app['merchant.provider'];

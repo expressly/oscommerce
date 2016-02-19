@@ -5,6 +5,7 @@ namespace Expressly\Lib;
 use Expressly\Entity\Merchant;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Provider\MerchantProviderInterface;
+use Pimple\Container;
 use Silex\Application;
 
 class MerchantProvider implements MerchantProviderInterface
@@ -16,7 +17,7 @@ class MerchantProvider implements MerchantProviderInterface
     const PATH = 'OSCOM_APP_EXPRESSLY_PATH';
     const HOST = 'OSCOM_APP_EXPRESSLY_HOST';
 
-    public function __construct(Application $app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
 
@@ -27,6 +28,25 @@ class MerchantProvider implements MerchantProviderInterface
             ->setHost($this->getParameter(self::HOST));
 
         $this->merchant = $merchant;
+    }
+
+    private function getParameter($key, $count = false)
+    {
+        $query = tep_db_query(
+            sprintf(
+                'SELECT COALESCE(`configuration_value`, "") AS `configuration_value` FROM %s WHERE `configuration_key`="%s" LIMIT 1;',
+                TABLE_CONFIGURATION,
+                $key
+            )
+        );
+
+        if ($count) {
+            return tep_db_num_rows($query);
+        }
+
+        $results = tep_db_fetch_array($query);
+
+        return $results['configuration_value'];
     }
 
     public function getMerchant()
@@ -50,6 +70,8 @@ class MerchantProvider implements MerchantProviderInterface
 
         return $this;
     }
+
+    // TODO: use application wide define() statements instead
 
     private function saveParameter($key, $value)
     {
@@ -82,25 +104,5 @@ class MerchantProvider implements MerchantProviderInterface
         }
 
         return true;
-    }
-
-    // TODO: use application wide define() statements instead
-    private function getParameter($key, $count = false)
-    {
-        $query = tep_db_query(
-            sprintf(
-                'SELECT COALESCE(`configuration_value`, "") AS `configuration_value` FROM %s WHERE `configuration_key`="%s" LIMIT 1;',
-                TABLE_CONFIGURATION,
-                $key
-            )
-        );
-
-        if ($count) {
-            return tep_db_num_rows($query);
-        }
-
-        $results = tep_db_fetch_array($query);
-
-        return $results['configuration_value'];
     }
 }

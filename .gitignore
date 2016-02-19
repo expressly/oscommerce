@@ -1,9 +1,9 @@
 .DS_Store
 .idea
 
-/bin
-/build/coverage
-/build/logs
+bin
+build/coverage
+build/logs
 vendor
 composer.lock
 composer.phar

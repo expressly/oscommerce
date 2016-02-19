@@ -11,13 +11,14 @@ use Expressly\Exception\ExceptionFormatter;
 use Expressly\Exception\GenericException;
 use Expressly\Presenter\CustomerMigratePresenter;
 use Expressly\Subscriber\CustomerMigrationSubscriber;
+use Pimple\Container;
 use Silex\Application;
 
 class Customer
 {
     private $app;
 
-    public function __construct(Application $app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
     }

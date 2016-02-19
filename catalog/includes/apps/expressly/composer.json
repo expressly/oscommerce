@@ -1,6 +1,6 @@
 {
     "name": "expressly/oscommerce",
-    "description": "Expressly OsCommerce 2.3 Module",
+    "description": "Expressly osCommerce 2.3 Module",
     "authors": [
         {
             "name": "expressly",
@@ -8,7 +8,10 @@
         }
     ],
     "require": {
-        "expressly/php-common": "2.3.2"
+        "expressly/php-common": "2.3.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*"
     },
     "repositories": [
         {
@@ -20,5 +23,8 @@
         "psr-4": {
             "Expressly\\Lib\\": "lib/"
         }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
