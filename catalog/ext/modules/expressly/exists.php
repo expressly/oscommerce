@@ -31,7 +31,13 @@ if (tep_session_is_registered('comments')) {
 
 $cart->reset();
 
-echo sprintf(
-    '<script type="text/javascript" src="%s"></script>',
-    DIR_WS_INCLUDES . 'apps/expressly/js/expressly.exists.js'
-);
+echo "<script> ";
+echo "(function () { ";
+echo "    setTimeout(function () { ";
+echo "        var login = confirm('Your Email address has already been registered on this store. Please login with your credentials. Pressing OK will redirect you to the login page.'); ";
+echo "        if (login) { ";
+echo "            window.location.replace('" . tep_href_link('login.php') . "');";
+echo "        } ";
+echo "    }, 500); ";
+echo " })();";
+echo "</script> ";
