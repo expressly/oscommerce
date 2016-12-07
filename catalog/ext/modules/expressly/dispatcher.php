@@ -27,14 +27,14 @@ if ($route instanceof Route) {
     switch ($route->getName()) {
         case Ping::getName():
             $presenter = new PingPresenter();
+            header('Content-Type: application/json');
             echo json_encode($presenter->toArray());
-
             return;
             break;
         case Registered::getName():
             $presenter = new RegisteredPresenter();
+            header('Content-Type: application/json');
             echo json_encode($presenter->toArray());
-
             return;
             break;
         case UserData::getName():
@@ -42,29 +42,26 @@ if ($route instanceof Route) {
             $ocCustomer = new Customer($app);
             header('Content-Type: application/json');
             echo json_encode($ocCustomer->get($data['email']));
-
             return;
             break;
         case CampaignPopup::getName():
             $data = $route->getData();
             tep_redirect("/ext/modules/expressly/popup.php?uuid={$data['uuid']}");
-
             return;
             break;
         case CampaignMigration::getName():
             $data = $route->getData();
             tep_redirect("/ext/modules/expressly/migrate.php?uuid={$data['uuid']}");
-
             return;
             break;
         case BatchCustomer::getName():
+            header('Content-Type: application/json');
             echo json_encode(InvoiceActions::getBulk($app));
-
             return;
             break;
         case BatchInvoice::getName():
+            header('Content-Type: application/json');
             echo json_encode(CustomerActions::getBulk($app));
-
             return;
             break;
     }
