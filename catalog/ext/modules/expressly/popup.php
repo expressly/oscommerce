@@ -31,8 +31,7 @@ try {
     echo $content;
 } catch (\Exception $e) {
     $logger->error(ExceptionFormatter::format($e));
-
-    tep_redirect('/');
+    tep_redirect(tep_href_link(FILENAME_DEFAULT));
 }
 
 

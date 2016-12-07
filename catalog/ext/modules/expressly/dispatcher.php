@@ -46,12 +46,12 @@ if ($route instanceof Route) {
             break;
         case CampaignPopup::getName():
             $data = $route->getData();
-            tep_redirect("/ext/modules/expressly/popup.php?uuid={$data['uuid']}");
+            tep_redirect(tep_href_link("/ext/modules/expressly/popup.php?uuid={$data['uuid']}"));
             return;
             break;
         case CampaignMigration::getName():
             $data = $route->getData();
-            tep_redirect("/ext/modules/expressly/migrate.php?uuid={$data['uuid']}");
+            tep_redirect(tep_href_link("/ext/modules/expressly/migrate.php?uuid={$data['uuid']}"));
             return;
             break;
         case BatchCustomer::getName():
@@ -68,5 +68,5 @@ if ($route instanceof Route) {
 }
 
 if (http_response_code() !== 401) {
-    tep_redirect('/');
+    tep_redirect(tep_href_link(FILENAME_DEFAULT));
 }
