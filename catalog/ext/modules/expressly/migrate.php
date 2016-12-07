@@ -9,11 +9,11 @@ use Expressly\Subscriber\CustomerMigrationSubscriber;
 chdir('../../../');
 require 'includes/apps/expressly/expressly.php';
 
-$uuid = $_GET['uuid'];
-if (empty($uuid)) {
+if (empty($_GET['uuid'])) {
     tep_redirect(tep_href_link(FILENAME_DEFAULT));
     return;
 }
+$uuid = $uuid.preg_replace('/([?].*)/', '', $_GET['uuid']);
 
 try {
     $event = new CustomerMigrateEvent($merchant, $uuid);
