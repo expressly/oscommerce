@@ -6,7 +6,6 @@ use Expressly\Entity\Merchant;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Provider\MerchantProviderInterface;
 use Pimple\Container;
-use Silex\Application;
 
 class MerchantProvider implements MerchantProviderInterface
 {

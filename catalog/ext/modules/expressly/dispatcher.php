@@ -18,7 +18,7 @@ chdir('../../../');
 require 'includes/apps/expressly/expressly.php';
 
 if (empty($_GET['query'])) {
-    tep_redirect('/');
+    tep_redirect(tep_href_link(FILENAME_DEFAULT));
 }
 
 $route = $app['route.resolver']->process($_GET['query']);
