@@ -7,11 +7,11 @@ use Expressly\Entity\Order;
 use Expressly\Exception\ExceptionFormatter;
 use Expressly\Exception\GenericException;
 use Expressly\Presenter\BatchInvoicePresenter;
-use Silex\Application;
+use Pimple\Container;
 
 class InvoiceActions
 {
-    public static function getBulk(Application $app)
+    public static function getBulk(Container $app)
     {
         $json = file_get_contents('php://input');
         $json = json_decode($json);

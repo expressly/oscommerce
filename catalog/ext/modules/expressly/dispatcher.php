@@ -56,12 +56,12 @@ if ($route instanceof Route) {
             break;
         case BatchCustomer::getName():
             header('Content-Type: application/json');
-            echo json_encode(InvoiceActions::getBulk($app));
+            echo json_encode(CustomerActions::getBulk($app));
             return;
             break;
         case BatchInvoice::getName():
             header('Content-Type: application/json');
-            echo json_encode(CustomerActions::getBulk($app));
+            echo json_encode(InvoiceActions::getBulk($app));
             return;
             break;
     }
