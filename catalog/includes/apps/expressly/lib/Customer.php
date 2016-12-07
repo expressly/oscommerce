@@ -151,6 +151,12 @@ class Customer
         );
 
         $osCustomer = tep_db_fetch_array($query);
+
+        if (empty($osCustomer)) {
+            header('HTTP/1.1 404 Not Found', true, 404);
+            return array();
+        }
+
         $dob = $osCustomer['customers_dob'] == '0000-00-00' || !$osCustomer['customers_dob'] ? null : new \DateTime($osCustomer['customers_dob']);
         $customer = new CustomerEntity();
         $customer
