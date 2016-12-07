@@ -40,6 +40,7 @@ if ($route instanceof Route) {
         case UserData::getName():
             $data = $route->getData();
             $ocCustomer = new Customer($app);
+            header('Content-Type: application/json');
             echo json_encode($ocCustomer->get($data['email']));
 
             return;

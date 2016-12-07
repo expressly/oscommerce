@@ -143,23 +143,20 @@ class Customer
 
     public function get($emailAddr)
     {
-        // split query so user is retrieved even if no addresses exist
         $query = tep_db_query(
             sprintf(
-                'SELECT cust.* , addr.*, country.countries_iso_code_3 FROM %s AS cust, %s AS addr, %s AS country WHERE cust.`customers_id`=addr.`customers_id` AND cust.`customers_default_address_id`=addr.`address_book_id` AND country.`countries_id`=addr.`entry_country_id` AND cust.`customers_email_address`="%s";',
+                'SELECT c.* FROM %s AS c WHERE c.`customers_email_address`=\'%s\'',
                 TABLE_CUSTOMERS,
-                TABLE_ADDRESS_BOOK,
-                TABLE_COUNTRIES,
-                $emailAddr
-            )
+                $emailAddr)
         );
-        $osCustomer = tep_db_fetch_array($query);
 
+        $osCustomer = tep_db_fetch_array($query);
+        $dob = $osCustomer['customers_dob'] == '0000-00-00' || !$osCustomer['customers_dob'] ? null : new \DateTime($osCustomer['customers_dob']);
         $customer = new CustomerEntity();
         $customer
             ->setFirstName($osCustomer['customers_firstname'])
             ->setLastName($osCustomer['customers_lastname'])
-            ->setBirthday(new \DateTime($osCustomer['customers_dob']))
+            ->setBirthday($dob)
             ->setGender($osCustomer['customers_gender'] == 'm' ? CustomerEntity::GENDER_MALE : CustomerEntity::GENDER_FEMALE);
 
         $email = new Email();
@@ -176,20 +173,33 @@ class Customer
             $customer->addPhone($phone);
         }
 
-        $address = new Address();
-        $address
-            ->setAlias('default')
-            ->setFirstName($osCustomer['entry_firstname'])
-            ->setLastName($osCustomer['entry_lastname'])
-            ->setAddress1($osCustomer['entry_street_address'])
-            ->setCity($osCustomer['entry_city'])
-            ->setCompanyName($osCustomer['entry_company'])
-            ->setZip($osCustomer['entry_postcode'])
-            ->setStateProvince($osCustomer['entry_state'])
-            ->setCountry($osCustomer['countries_iso_code_3'])
-            ->setPhonePosition($customer->getPhoneIndex($phone));
-        if ($address->getAddress1()) {
-            $customer->addAddress($address, true, Address::ADDRESS_BOTH);
+        $query = tep_db_query(
+            sprintf(
+                'SELECT a.*, c.countries_iso_code_3 FROM %s AS a left outer join countries AS c on a.`entry_country_id` = c.`countries_id`  WHERE a.`customers_id` = %s',
+                TABLE_ADDRESS_BOOK,
+                $osCustomer['customers_id']
+            )
+        );
+
+        while ($osAddress = tep_db_fetch_array($query)) {
+            $address = new Address();
+            $address
+                ->setFirstName($osAddress['entry_firstname'])
+                ->setLastName($osAddress['entry_lastname'])
+                ->setAddress1($osAddress['entry_street_address'])
+                ->setCity($osAddress['entry_city'])
+                ->setCompanyName($osAddress['entry_company'])
+                ->setZip($osAddress['entry_postcode'])
+                ->setStateProvince($osAddress['entry_state'])
+                ->setCountry($osAddress['countries_iso_code_3'])
+                ->setPhonePosition(0);
+                if ($address->getAddress1()) {
+                    if ($osAddress['address_book_id'] == $osCustomer['customers_default_address_id']) {
+                        $customer->addAddress($address, true, Address::ADDRESS_BOTH);
+                    } else {
+                        $customer->addAddress($address, false, null);
+                    }
+                }
         }
 
         $merchant = $this->app['merchant.provider']->getMerchant();
