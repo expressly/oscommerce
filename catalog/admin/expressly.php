@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div>
                     <p>
                         <label>API Key</label>
-                        API Key provided from our <a href="https://buyexpressly.com/#/install#api">portal</a>. If you do
+                        API Key provided from our <a href="https://portal.buyexpressly.com/my-account/api">portal</a>. If you do
                         not have an API Key, please follow the previous link for instructions on how to create one.
                     </p>
 
