@@ -30,7 +30,7 @@ class InvoiceActions
 
                 $orderQuery = tep_db_query(
                     sprintf(
-                        'SELECT ord.`orders_id`, ord.`date_purchased` FROM %s AS cust, %s AS ord WHERE cust.`customers_email_address`="%s" AND ord.`customers_id`=cust.`customers_id` AND ord.`date_purchased` BETWEEN "%s" AND "%s";',
+                        'SELECT ord.`orders_id`, ord.`currency`, ord.`date_purchased` FROM %s AS cust, %s AS ord WHERE cust.`customers_email_address`=\'%s\' AND ord.`customers_id`=cust.`customers_id` AND ord.`date_purchased` BETWEEN \'%s\' AND \'%s\';',
                         TABLE_CUSTOMERS,
                         TABLE_ORDERS,
                         $customer->email,
@@ -42,7 +42,7 @@ class InvoiceActions
                 $invoice = new Invoice();
                 $invoice->setEmail($customer->email);
 
-                foreach (tep_db_fetch_array($orderQuery) as $row) {
+                while ($row = tep_db_fetch_array($orderQuery)) {
                     if (empty($row['orders_id'])) {
                         continue;
                     }
@@ -58,31 +58,31 @@ class InvoiceActions
                     $total = 0.0;
                     $tax = 0.0;
                     $count = 0;
-                    $currency = '';
+                    $currency = $row['currency'];
 
-                    foreach (tep_db_fetch_array($productQuery) as $osProduct) {
+                    while ($osProduct = tep_db_fetch_array($productQuery)) {
                         $total += $osProduct['products_price'];
                         $tax += $osProduct['products_tax'];
                         ++$count;
-                        $currency = $osProduct['currency'];
                     }
 
                     $order = new Order();
                     $order
                         ->setId($row['orders_id'])
                         ->setDate(new \DateTime($row['date_purchased']))
-                        ->setCurrency($currency)
                         ->setTotal($total, $tax);
-
+                    $order->setCurrency($currency);
                     $invoice->addOrder($order);
                 }
+
+                $invoices[] = $invoice;
             }
         } catch (\Exception $e) {
+            return $e;
             $app['logger']->error(ExceptionFormatter::format($e));
         }
 
         $presenter = new BatchInvoicePresenter($invoices);
-
         return $presenter->toArray();
     }
 }
