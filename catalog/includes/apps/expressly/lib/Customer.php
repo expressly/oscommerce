@@ -41,6 +41,7 @@ class Customer
                 $event = new CustomerMigrateEvent($merchant, $uuid, CustomerMigrateEvent::EXISTING_CUSTOMER);
                 $exists = true;
             } else {
+                $cphone = !empty($customer['phones']) ? $customer['phones'][0]['number'] : '';
                 tep_db_perform(
                     TABLE_CUSTOMERS, array(
                         'customers_firstname' => $customer['firstName'],
@@ -48,9 +49,9 @@ class Customer
                         'customers_gender' => $customer['gender'] == CustomerEntity::GENDER_MALE ? 'm' : 'f',
                         'customers_email_address' => $email,
                         'customers_password' => md5('xly' . microtime()),
-                        'customers_telephone' => '',
+                        'customers_telephone' => $cphone,
                         'customers_fax' => '',
-                        'customers_dob' => $customer['birthday'],
+                        'customers_dob' => $customer['dob'],
                         'customers_newsletter' => 1
                     )
                 );
@@ -58,9 +59,20 @@ class Customer
                 $defaultAddressId = 0;
 
                 foreach ($customer['addresses'] as $index => $address) {
-                    $countryCodeProvider = $this->app['country_code.provider'];
-                    $countryCode = $countryCodeProvider->getIso3($address['country']);
-                    $osCountryId = $countryCode;
+//                    $countryCodeProvider = $this->app['country_code.provider'];
+//                    $countryCode = $countryCodeProvider->getIso3($address['country']);
+//                    $osCountryId = $countryCode;
+
+                    $countryQuery = tep_db_query(
+                        sprintf(
+                            'SELECT countries_id FROM countries WHERE %s = \'%s\'',
+                            strlen($address['country']) == 2 ? 'countries_iso_code_2' : (strlen($address['country']) == 3 ? 'countries_iso_code_3' : 'countries_name'),
+                            $address['country']
+                        )
+                    );
+
+                    $countryArray = tep_db_fetch_array($countryQuery);
+                    $countryId = $countryArray ? $countryArray['countries_id'] : null;
 
                     tep_db_perform(
                         TABLE_ADDRESS_BOOK,
@@ -74,7 +86,7 @@ class Customer
                             'entry_postcode' => $address['zip'],
                             'entry_city' => $address['city'],
                             'entry_state' => $address['stateProvence'],
-                            'entry_country_id' => $osCountryId
+                            'entry_country_id' => $countryId
                         )
                     );
 
