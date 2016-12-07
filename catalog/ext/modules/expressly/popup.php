@@ -12,8 +12,6 @@ require 'includes/apps/expressly/expressly.php';
 $uuid = $_GET['uuid'];
 if (empty($uuid)) {
     echo '<script>window.location.href="' . tep_href_link(FILENAME_DEFAULT) . '";</script>';
-
-    tep_redirect(tep_href_link(FILENAME_DEFAULT));
     return;
 }
 
