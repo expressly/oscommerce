@@ -44,3 +44,7 @@ rm -rf ${VENDOR_DIR}/symfony/yaml/Symfony/Component/Yaml/Tests
 # build the distribution
 echo "[Packaging extension]"
 tar -czf ${DIR}/out/expressly-${1-dev}-oscommerce-2.3.tar.gz -C ${DIR}/out/src .
+pushd ${DIR}/out/src
+pwd
+zip -r ${DIR}/out/expressly-${1-dev}-oscommerce-2.3.zip .
+popd

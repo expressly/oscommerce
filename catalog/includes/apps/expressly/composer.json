@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "expressly/php-common": "2.5.0"
+        "expressly/php-common": "2.7.1"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.*"

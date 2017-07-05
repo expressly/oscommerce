@@ -22,7 +22,7 @@ try {
     $content = $event->getContent();
     if (!$event->isSuccessful()) {
         if (!empty($content['code']) && $content['code'] == 'USER_ALREADY_MIGRATED') {
-            tep_redirect(tep_href_link('/ext/modules/expressly/exists.php'));
+            tep_redirect('https://prod.expresslyapp.com/api/redirect/migration/' . $uuid . '/exists?loginUrl=' . urlencode(tep_href_link(FILENAME_LOGIN, '', 'SSL')));
             return;
         }
 
@@ -31,12 +31,12 @@ try {
 
     $osCustomer = new Customer($app);
     if (!$osCustomer->add($uuid, $content, $language)) {
-        tep_redirect(tep_href_link('/ext/modules/expressly/exists.php'));
+        tep_redirect('https://prod.expresslyapp.com/api/redirect/migration/' . $uuid . '/exists?loginUrl=' . urlencode(tep_href_link(FILENAME_LOGIN, '', 'SSL')));
         return;
     }
     tep_redirect('https://prod.expresslyapp.com/api/redirect/migration/' . $uuid . '/success');
 } catch (\Exception $e) {
     $logger->error(ExceptionFormatter::format($e));
-    tep_redirect('https://prod.expresslyapp.com/api/redirect/migration/' . $uuid . '/failed');
+    tep_redirect('https://prod.expresslyapp.com/api/redirect/migration/' . $uuid . '/failed?e=' . urlencode($xlyerror));
     return;
 }

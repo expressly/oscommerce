@@ -32,7 +32,7 @@ if ($route instanceof Route) {
             return;
             break;
         case Registered::getName():
-            $presenter = new RegisteredPresenter();
+            $presenter = new RegisteredPresenter("OsCommerce", tep_get_version());
             header('Content-Type: application/json');
             echo json_encode($presenter->toArray());
             return;

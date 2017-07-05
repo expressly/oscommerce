@@ -18,12 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $apiKey = $merchant->getApiKey();
 
         if (empty($apiKey)) {
-            // seed initial data
-            $host = sprintf('http://%s', $_SERVER['HTTP_HOST']);
-
-            $merchant
-                ->setPath('/ext/modules/expressly/dispatcher.php?query=')
-                ->setHost($host);
+            if (HTTPS_SERVER != '') {
+                $merchant
+                    ->setPath(DIR_WS_HTTPS_CATALOG . 'ext/modules/expressly/dispatcher.php?query=')
+                    ->setHost(HTTPS_SERVER);
+            } else {
+                $merchant
+                    ->setPath(DIR_WS_CATALOG . '/ext/modules/expressly/dispatcher.php?query=')
+                    ->setHost(HTTP_SERVER);
+            }
         }
 
         $apiKey = !empty($_POST['expressly_apikey']) ? $_POST['expressly_apikey'] : $apiKey;
