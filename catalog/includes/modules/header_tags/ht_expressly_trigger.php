@@ -24,7 +24,7 @@
         $this->group = 'header_tags';
       }
 
-      $output = '<script type=\'text/javascript\' src=\'https://assets01.buyexpressly.com/lightbox/trigger-v2.js\' async></script>';
+      $output = '<script type=\'text/javascript\' src=\'https://assets01.buyexpressly.com/lightbox/trigger-v2.min.js\' async></script>';
       $oscTemplate->addBlock($output, $this->group);
     }
 

@@ -23,27 +23,29 @@ $flash = array(
 function formatError(Expressly\Event\ResponseEvent $event)
 {
     $content = $event->getContent();
-    $message = array(
-        $content['description']
-    );
+    $message = array('Something went wrong');
+    if (is_array($content) && $content['description']) {
+        $message = array(
+            $content['description']
+        );
 
-    $addBulletpoints = function ($key, $title) use ($content, &$message) {
-        if (!empty($content[$key])) {
-            $message[] = '<br>';
-            $message[] = $title;
-            $message[] = '<ul>';
+        $addBulletpoints = function ($key, $title) use ($content, &$message) {
+            if (!empty($content[$key])) {
+                $message[] = '<br>';
+                $message[] = $title;
+                $message[] = '<ul>';
 
-            foreach ($content[$key] as $point) {
-                $message[] = "<li>{$point}</li>";
+                foreach ($content[$key] as $point) {
+                    $message[] = "<li>{$point}</li>";
+                }
+
+                $message[] = '</ul>';
             }
+        };
 
-            $message[] = '</ul>';
-        }
-    };
-
-    // TODO: translatable
-    $addBulletpoints('causes', 'Possible causes:');
-    $addBulletpoints('actions', 'Possible resolutions:');
+        $addBulletpoints('causes', 'Possible causes:');
+        $addBulletpoints('actions', 'Possible resolutions:');
+    }
 
     return implode('', $message);
 }
